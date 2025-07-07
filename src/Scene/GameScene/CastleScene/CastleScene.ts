@@ -630,6 +630,15 @@ export default class CastleScene extends THREE.Group {
 
             this.tilesShowState = TilesShowState.Completed;
             this.clouds.showInstantly();
+
+            for (const entityType in this.steps) {
+                for (let i = 0; i < this.steps[entityType].length; i++) {
+                    const step: INewTileStep = this.steps[entityType][i];
+                    if (step?.tile?.type && HexTilePartsConfig[step.tile.type]) {
+                        this.hexTileParts.showPartInstantly(step.tile.type, step.tile.rotation, step.tile.position);
+                    }
+                }
+            }
         }
     }
 
