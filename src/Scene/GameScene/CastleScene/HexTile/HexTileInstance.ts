@@ -12,6 +12,7 @@ import { GameConfig } from '../../../../Data/Configs/GameConfig';
 import { TilesShadowConfig } from '../../../../Data/Configs/TilesShadowConfig';
 import TWEEN from 'three/addons/libs/tween.module.js';
 import { TilesShowAnimationConfig } from '../../../../Data/Configs/TilesShowAnimationConfig';
+import { ITransform } from '../../../../Data/Interfaces/IThreeJS';
 
 export default class HexTileInstance extends THREE.Group {
     private hexTileInstanceData: IHexTileInstanceData;
@@ -69,10 +70,16 @@ export default class HexTileInstance extends THREE.Group {
                 .easing(config.easing)
                 .start()
                 .onUpdate(() => {
-                    ThreeJSHelper.updateInstanceTransform(this.hexTileInstanceMesh, index, undefined, undefined, new THREE.Vector3(scale.value, scale.value, scale.value));
+                    const transform: ITransform = {
+                        scale: new THREE.Vector3(scale.value, scale.value, scale.value)
+                    }
+                    ThreeJSHelper.updateInstanceTransform(this.hexTileInstanceMesh, index, transform);
                 })
                 .onComplete(() => {
-                    ThreeJSHelper.updateInstanceTransform(this.hexTileInstanceMesh, index, undefined, undefined, new THREE.Vector3(1, 1, 1));
+                    const transform: ITransform = {
+                        scale: new THREE.Vector3(1, 1, 1)
+                    }
+                    ThreeJSHelper.updateInstanceTransform(this.hexTileInstanceMesh, index, transform);
                 });
         }
 
@@ -85,7 +92,10 @@ export default class HexTileInstance extends THREE.Group {
     public showAllTiles(): void {
         for (let i = 0; i < this.hexTileInstanceIndexes.length; i++) {
             const index = this.hexTileInstanceIndexes[i];
-            ThreeJSHelper.updateInstanceTransform(this.hexTileInstanceMesh, index.index, undefined, undefined, new THREE.Vector3(1, 1, 1));
+            const transform: ITransform = {
+                scale: new THREE.Vector3(1, 1, 1)
+            }
+            ThreeJSHelper.updateInstanceTransform(this.hexTileInstanceMesh, index.index, transform);
         }
     }
 

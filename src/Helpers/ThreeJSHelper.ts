@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { GLTF } from 'three/examples/jsm/Addons.js';
 import Loader from '../Core/Loader/AssetsLoader';
+import { ITransform } from '../Data/Interfaces/IThreeJS';
 
 export default class ThreeJSHelper {
     constructor() {
@@ -116,7 +117,7 @@ export default class ThreeJSHelper {
         return resultColor;
     }
 
-    public static updateInstanceTransform(instanceMesh: THREE.InstancedMesh, index: number, position?: THREE.Vector3, rotationQuaternion?: THREE.Quaternion, scale?: THREE.Vector3): void {
+    public static updateInstanceTransform(instanceMesh: THREE.InstancedMesh, index: number, transform: ITransform): void {
         const matrix = new THREE.Matrix4();
         instanceMesh.getMatrixAt(index, matrix);
 
@@ -127,16 +128,16 @@ export default class ThreeJSHelper {
 
         matrix.decompose(newPosition, newRotationQuaternion, newScale);
 
-        if (position) {
-            newPosition.copy(position);
+        if (transform.position) {
+            newPosition.copy(transform.position);
         }
 
-        if (rotationQuaternion) {
-            newRotationQuaternion.copy(rotationQuaternion);
+        if (transform.rotation) {
+            newRotationQuaternion.copy(transform.rotation);
         }
 
-        if (scale) {
-            newScale.copy(scale);
+        if (transform.scale) {
+            newScale.copy(transform.scale);
         }
 
         newMatrix.compose(newPosition, newRotationQuaternion, newScale);

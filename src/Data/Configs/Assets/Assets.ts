@@ -1,5 +1,6 @@
 const TextureAssets: string[] = [
     'hexagons_medieval.png',
+    'noiseTexture.png'
 ];
 
 const ModelAssets: string[] = [

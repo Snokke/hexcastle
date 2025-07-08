@@ -9,6 +9,7 @@ import { CloudType } from '../../../Data/Enums/CloudType';
 import { DefaultWFCConfig } from '../../../Data/Configs/WFCConfig';
 import { CloudsConfig } from '../../../Data/Configs/CloudsConfig';
 import { IClouds } from '../../../Data/Interfaces/ICloud';
+import { ITransform } from '../../../Data/Interfaces/IThreeJS';
 
 export default class Clouds extends THREE.Group {
     private cloudInstances: { [key in CloudType]?: THREE.InstancedMesh } = {};
@@ -55,7 +56,10 @@ export default class Clouds extends THREE.Group {
             const scale = this.clouds[i].scale;
             const instance = this.cloudInstances[type];
 
-            ThreeJSHelper.updateInstanceTransform(instance, index, undefined, undefined, new THREE.Vector3(scale, scale, scale));
+            const transform: ITransform = {
+                scale: new THREE.Vector3(scale, scale, scale)
+            };
+            ThreeJSHelper.updateInstanceTransform(instance, index, transform);
         }
 
         this.state = CloudsState.Moving;
@@ -69,7 +73,10 @@ export default class Clouds extends THREE.Group {
             const index = this.clouds[i].index;
             const instance = this.cloudInstances[type];
 
-            ThreeJSHelper.updateInstanceTransform(instance, index, undefined, undefined, new THREE.Vector3(0.001, 0.001, 0.001));
+            const transform: ITransform = {
+                scale: new THREE.Vector3(0.001, 0.001, 0.001)
+            };
+            ThreeJSHelper.updateInstanceTransform(instance, index, transform);
 
             if (this.clouds[i].tween) {
                 this.clouds[i].tween.stop();
@@ -133,10 +140,16 @@ export default class Clouds extends THREE.Group {
             .easing(TWEEN.Easing.Back.In)
             .start()
             .onUpdate(() => {
-                ThreeJSHelper.updateInstanceTransform(instance, index, undefined, undefined, new THREE.Vector3(scaleObject.value, scaleObject.value, scaleObject.value));
+                const transform: ITransform = {
+                    scale: new THREE.Vector3(scaleObject.value, scaleObject.value, scaleObject.value)
+                };
+                ThreeJSHelper.updateInstanceTransform(instance, index, transform);
             })
             .onComplete(() => {
-                ThreeJSHelper.updateInstanceTransform(instance, index, undefined, undefined, new THREE.Vector3(0.001, 0.001, 0.001));
+                const transform: ITransform = {
+                    scale: new THREE.Vector3(0.001, 0.001, 0.001)
+                }
+                ThreeJSHelper.updateInstanceTransform(instance, index, transform);
                 this.resetToNewPosition(type, index);
 
                 this.clouds[cloudsIndex].state = CloudState.Showing;
@@ -154,10 +167,16 @@ export default class Clouds extends THREE.Group {
             .easing(TWEEN.Easing.Back.Out)
             .start()
             .onUpdate(() => {
-                ThreeJSHelper.updateInstanceTransform(instance, index, undefined, undefined, new THREE.Vector3(scaleObject.value, scaleObject.value, scaleObject.value));
+                const transform: ITransform = {
+                    scale: new THREE.Vector3(scaleObject.value, scaleObject.value, scaleObject.value)
+                };
+                ThreeJSHelper.updateInstanceTransform(instance, index, transform);
             })
             .onComplete(() => {
-                ThreeJSHelper.updateInstanceTransform(instance, index, undefined, undefined, new THREE.Vector3(scale, scale, scale));
+                const transform: ITransform = {
+                    scale: new THREE.Vector3(scale, scale, scale)
+                }
+                ThreeJSHelper.updateInstanceTransform(instance, index, transform);
                 this.clouds[cloudsIndex].state = CloudState.Moving;
             });
     }
@@ -220,7 +239,12 @@ export default class Clouds extends THREE.Group {
             const scale = THREE.MathUtils.randFloat(CloudsConfig.scale.min, CloudsConfig.scale.max);
 
             const instance = this.cloudInstances[type];
-            ThreeJSHelper.updateInstanceTransform(instance, indexByType[type], position, rotation, new THREE.Vector3(0.001, 0.001, 0.001));
+            const transform: ITransform = {
+                position: position.clone(),
+                rotation: rotation.clone(),
+                scale: new THREE.Vector3(0.001, 0.001, 0.001)
+            }
+            ThreeJSHelper.updateInstanceTransform(instance, indexByType[type], transform);
 
             this.clouds.push({
                 type: type,
@@ -284,10 +308,16 @@ export default class Clouds extends THREE.Group {
             .easing(TWEEN.Easing.Back.Out)
             .start()
             .onUpdate(() => {
-                ThreeJSHelper.updateInstanceTransform(instance, index, undefined, undefined, new THREE.Vector3(scaleObject.value, scaleObject.value, scaleObject.value));
+                const transform: ITransform = {
+                    scale: new THREE.Vector3(scaleObject.value, scaleObject.value, scaleObject.value)
+                }
+                ThreeJSHelper.updateInstanceTransform(instance, index, transform);
             })
             .onComplete(() => {
-                ThreeJSHelper.updateInstanceTransform(instance, index, undefined, undefined, new THREE.Vector3(scale, scale, scale));
+                const transform: ITransform = {
+                    scale: new THREE.Vector3(scale, scale, scale)
+                }
+                ThreeJSHelper.updateInstanceTransform(instance, index, transform);
             });
     }
 
