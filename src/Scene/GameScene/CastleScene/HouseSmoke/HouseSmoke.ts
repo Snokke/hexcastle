@@ -10,7 +10,7 @@ import TWEEN from 'three/addons/libs/tween.module.js';
 import { TilesShowAnimationConfig } from '../../../../Data/Configs/TilesShowAnimationConfig';
 import { HexTileType } from '../../../../Data/Enums/HexTileType';
 
-export default class Smoke extends THREE.Group {
+export default class HouseSmoke extends THREE.Group {
     private view: THREE.InstancedMesh;
     private currentIndex: number = 0;
 

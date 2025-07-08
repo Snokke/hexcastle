@@ -32,7 +32,7 @@ import Clouds from './Clouds';
 import { NatureGenerator } from './Nature/NatureGenerator';
 import { ButtonType } from '../../../Data/Enums/ButtonType';
 import { CloudsConfig } from '../../../Data/Configs/CloudsConfig';
-import Smoke from './Smoke/Smoke';
+import HouseSmoke from './HouseSmoke/HouseSmoke';
 import { SmokeConfig } from '../../../Data/Configs/SmokeConfig';
 
 export default class CastleScene extends THREE.Group {
@@ -69,7 +69,7 @@ export default class CastleScene extends THREE.Group {
     private clouds: Clouds;
     private natureGenerator: NatureGenerator;
     private stopButtonActive: boolean = false;
-    private smoke: Smoke;
+    private houseSmoke: HouseSmoke;
 
     private isIntroActive: boolean = true;
 
@@ -101,7 +101,7 @@ export default class CastleScene extends THREE.Group {
 
         this.hexTileParts.update(dt);
         this.clouds.update(dt);
-        this.smoke.update();
+        this.houseSmoke.update();
     }
 
     public start(): void {
@@ -431,8 +431,8 @@ export default class CastleScene extends THREE.Group {
     }
 
     private initSmoke(): void {
-        const smoke = this.smoke = new Smoke();
-        this.add(smoke);
+        const houseSmoke = this.houseSmoke = new HouseSmoke();
+        this.add(houseSmoke);
     }
 
     private showPredefinedLandscapeTiles(): void {
@@ -468,7 +468,7 @@ export default class CastleScene extends THREE.Group {
                     }
 
                     if (SmokeConfig.tiles.includes(step.tile.type)) {
-                        this.smoke.show(step.tile.position, step.tile.rotation, step.tile.type);
+                        this.houseSmoke.show(step.tile.position, step.tile.rotation, step.tile.type);
                     }
                 }
             }
@@ -588,7 +588,7 @@ export default class CastleScene extends THREE.Group {
         this.islandsDebug?.reset();
 
         this.clouds.hide();
-        this.smoke.hideAll();
+        this.houseSmoke.hideAll();
     }
 
     private initGlobalListeners(): void {
