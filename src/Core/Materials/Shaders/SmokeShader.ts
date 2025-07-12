@@ -31,29 +31,15 @@ export const SmokeVertexShader = `
         newPosition.xz += windOffset;
 
         // Final position
-        // vec4 instancePosition = instanceMatrix * vec4(newPosition, 1.0);
-        // vec4 worldPosition = modelMatrix * instancePosition;
-        
-        // vec4 viewPosition = viewMatrix * worldPosition;
-        // vec4 projectedPosition = projectionMatrix * viewPosition;
-        
-        // gl_Position = projectedPosition;
-
-        // Varyings
-        vUv = uv;
-
-
-
-
-        vec3 localPosition = position;
-        
-        vec4 instancePosition = instanceMatrix * vec4(localPosition, 1.0);
+        vec4 instancePosition = instanceMatrix * vec4(newPosition, 1.0);
         vec4 worldPosition = modelMatrix * instancePosition;
         
         vec4 viewPosition = viewMatrix * worldPosition;
         vec4 projectedPosition = projectionMatrix * viewPosition;
         
         gl_Position = projectedPosition;
+
+        vUv = uv;
     }
 `;
 
@@ -72,8 +58,8 @@ export const SmokeFragmentShader = `
 
         smoke = smoothstep(0.1, 1.0, smoke);
 
-        smoke *= smoothstep(0.0, 0.2, vUv.x);
-        smoke *= smoothstep(2.0, 0.8, vUv.x);
+        smoke *= smoothstep(0.0, 0.15, vUv.x);
+        smoke *= smoothstep(1.0, 0.85, vUv.x);
         smoke *= smoothstep(0.0, 0.1, vUv.y);
         smoke *= smoothstep(1.0, 0.4, vUv.y);
 
