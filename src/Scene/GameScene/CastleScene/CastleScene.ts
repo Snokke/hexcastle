@@ -468,7 +468,10 @@ export default class CastleScene extends THREE.Group {
                     }
 
                     if (HouseSmokeConfig.tiles.includes(step.tile.type)) {
-                        this.houseSmoke.show(step.tile.position, step.tile.rotation, step.tile.type);
+                        const showSmoke = Math.random() < HouseSmokeConfig.chance;
+                        if (showSmoke) {
+                            this.houseSmoke.show(step.tile.position, step.tile.rotation, step.tile.type);
+                        }
                     }
                 }
             }

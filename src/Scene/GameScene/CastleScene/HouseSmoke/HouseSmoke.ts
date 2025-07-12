@@ -16,6 +16,7 @@ export default class HouseSmoke extends THREE.Group {
     private view: THREE.InstancedMesh;
     private currentIndex: number = 0;
     private shaderMaterial: THREE.ShaderMaterial;
+    private showTweens: any[] = [];
 
     constructor() {
         super();
@@ -34,7 +35,7 @@ export default class HouseSmoke extends THREE.Group {
     }
 
     public show(hexPosition: IHexCoord, rotation: HexRotation, parentHexType: HexTileType): void {
-        if (this.currentIndex >= HouseSmokeConfig.count) {
+        if (this.currentIndex >= HouseSmokeConfig.maxCount) {
             return;
         }
 
@@ -61,12 +62,17 @@ export default class HouseSmoke extends THREE.Group {
     }
 
     public hideAll(): void {
-        for (let i = 0; i < HouseSmokeConfig.count; i++) {
+        for (let i = 0; i < HouseSmokeConfig.maxCount; i++) {
+            if (this.showTweens[i]) {
+                this.showTweens[i].stop();
+            }
+
             ThreeJSHelper.updateInstanceTransform(this.view, i, {
                 scale: new THREE.Vector3(0.001, 0.001, 0.001)
             });
         }
 
+        this.showTweens = [];
         this.currentIndex = 0;
     }
 
@@ -74,7 +80,7 @@ export default class HouseSmoke extends THREE.Group {
         const config: ITileShowAnimationConfig = TilesShowAnimationConfig[type];
         const scale = { value: 0.001 };
 
-        new TWEEN.Tween(scale)
+        this.showTweens[index] = new TWEEN.Tween(scale)
             .to({ value: 1 }, config.time)
             .easing(config.easing)
             .start()
@@ -99,14 +105,14 @@ export default class HouseSmoke extends THREE.Group {
 
         const hideScale = 0.001;
 
-        const view = this.view = new THREE.InstancedMesh(smokeGeometry, this.shaderMaterial, HouseSmokeConfig.count);
+        const view = this.view = new THREE.InstancedMesh(smokeGeometry, this.shaderMaterial, HouseSmokeConfig.maxCount);
         this.add(view);
 
         view.frustumCulled = false;
 
         const matrix = new THREE.Matrix4();
 
-        for (let i = 0; i < HouseSmokeConfig.count; i++) {
+        for (let i = 0; i < HouseSmokeConfig.maxCount; i++) {
             const position: THREE.Vector3 = new THREE.Vector3();
             const rotationQuaternion = new THREE.Quaternion();
             const scale = new THREE.Vector3(hideScale, hideScale, hideScale);
