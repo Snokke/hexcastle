@@ -650,10 +650,20 @@ export default class CastleScene extends THREE.Group {
             this.clouds.showInstantly();
 
             for (const entityType in this.steps) {
-                for (let i = 0; i < this.steps[entityType].length; i++) {
-                    const step: INewTileStep = this.steps[entityType][i];
-                    if (step?.tile?.type && HexTilePartsConfig[step.tile.type]) {
-                        this.hexTileParts.showPartInstantly(step.tile.type, step.tile.rotation, step.tile.position);
+                const stepsArray: INewTileStep[] = this.steps[entityType as keyof typeof this.steps];
+                for (let i = 0; i < stepsArray.length; i++) {
+                    const step: INewTileStep = stepsArray[i];
+                    if (step?.tile?.type) {
+                        if (HexTilePartsConfig[step.tile.type]) {
+                            this.hexTileParts.showPartInstantly(step.tile.type, step.tile.rotation, step.tile.position);
+                        }
+
+                        if (HouseSmokeConfig.tiles.includes(step.tile.type)) {
+                            const showSmoke = Math.random() < HouseSmokeConfig.chance;
+                            if (showSmoke) {
+                                this.houseSmoke.show(step.tile.position, step.tile.rotation, step.tile.type, true);
+                            }
+                        }
                     }
                 }
             }
