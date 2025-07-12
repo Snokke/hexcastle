@@ -9,7 +9,7 @@ const GameConfig = {
             max: 20,
             default: 5
         },
-        showTilesTimeScale: 1,
+        showTilesTimeScale: 5,
     },
     WFC: {
         syncGenerationRadius: 7,

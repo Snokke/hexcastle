@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { IHexCoord, ITileShowAnimationConfig } from '../../../../Data/Interfaces/IHexTile';
-import { SmokeConfig } from '../../../../Data/Configs/SmokeConfig';
+import { HouseSmokeConfig } from '../../../../Data/Configs/HouseSmokeConfig';
 import ThreeJSHelper from '../../../../Helpers/ThreeJSHelper';
 import HexGridHelper from '../../../../Helpers/HexGridHelper';
 import { GameConfig } from '../../../../Data/Configs/GameConfig';
@@ -9,10 +9,13 @@ import { GridOrientation } from '../../../../Data/Enums/GridOrientation';
 import TWEEN from 'three/addons/libs/tween.module.js';
 import { TilesShowAnimationConfig } from '../../../../Data/Configs/TilesShowAnimationConfig';
 import { HexTileType } from '../../../../Data/Enums/HexTileType';
+import Materials from '../../../../Core/Materials/Materials';
+import { MaterialType } from '../../../../Data/Enums/MaterialType';
 
 export default class HouseSmoke extends THREE.Group {
     private view: THREE.InstancedMesh;
     private currentIndex: number = 0;
+    private shaderMaterial: THREE.ShaderMaterial;
 
     constructor() {
         super();
@@ -20,14 +23,18 @@ export default class HouseSmoke extends THREE.Group {
         this.init();
     }
 
-    public update(): void {
+    public update(dt: number): void {
         if (this.currentIndex === 0) {
             return;
+        }
+
+        if (this.shaderMaterial) {
+            this.shaderMaterial.uniforms.uTime.value += dt;
         }
     }
 
     public show(hexPosition: IHexCoord, rotation: HexRotation, parentHexType: HexTileType): void {
-        if (this.currentIndex >= SmokeConfig.count) {
+        if (this.currentIndex >= HouseSmokeConfig.count) {
             return;
         }
 
@@ -38,9 +45,9 @@ export default class HouseSmoke extends THREE.Group {
 
         const position: THREE.Vector3 = HexGridHelper.axialToWorld(hexPosition, GameConfig.gameField.hexSize, GameConfig.gameField.GridOrientation);
 
-        const offsetX = SmokeConfig.position.x * Math.cos(-rotationAngle) - SmokeConfig.position.z * Math.sin(-rotationAngle);
-        const offsetZ = SmokeConfig.position.x * Math.sin(-rotationAngle) + SmokeConfig.position.z * Math.cos(-rotationAngle);
-        const offsetY = SmokeConfig.position.y;
+        const offsetX = HouseSmokeConfig.position.x * Math.cos(-rotationAngle) - HouseSmokeConfig.position.z * Math.sin(-rotationAngle);
+        const offsetZ = HouseSmokeConfig.position.x * Math.sin(-rotationAngle) + HouseSmokeConfig.position.z * Math.cos(-rotationAngle);
+        const offsetY = HouseSmokeConfig.position.y;
         position.add(new THREE.Vector3(offsetX, offsetY, offsetZ));
 
         ThreeJSHelper.updateInstanceTransform(this.view, this.currentIndex, {
@@ -54,7 +61,7 @@ export default class HouseSmoke extends THREE.Group {
     }
 
     public hideAll(): void {
-        for (let i = 0; i < SmokeConfig.count; i++) {
+        for (let i = 0; i < HouseSmokeConfig.count; i++) {
             ThreeJSHelper.updateInstanceTransform(this.view, i, {
                 scale: new THREE.Vector3(0.001, 0.001, 0.001)
             });
@@ -72,41 +79,34 @@ export default class HouseSmoke extends THREE.Group {
             .easing(config.easing)
             .start()
             .onUpdate(() => {
-                // ThreeJSHelper.updateInstanceTransform(this.view, index, {
-                //     scale: new THREE.Vector3(scale.value, scale.value, scale.value)
-                // });
-
                 ThreeJSHelper.updateInstanceTransform(this.view, index, {
-                    scale: new THREE.Vector3(0.001, 0.001, 0.001)
+                    scale: new THREE.Vector3(scale.value, scale.value, scale.value)
                 });
             })
             .onComplete(() => {
-                // ThreeJSHelper.updateInstanceTransform(this.view, index, {
-                //     scale: new THREE.Vector3(1, 1, 1)
-                // });
+                ThreeJSHelper.updateInstanceTransform(this.view, index, {
+                    scale: new THREE.Vector3(1, 1, 1)
+                });
             });
     }
 
     private init(): void {
         const smokeGeometry = new THREE.PlaneGeometry(1, 1, 16, 64);
         smokeGeometry.translate(0, 0.5, 0);
-        smokeGeometry.scale(SmokeConfig.size.x, SmokeConfig.size.y, SmokeConfig.size.x);
+        smokeGeometry.scale(HouseSmokeConfig.size.x, HouseSmokeConfig.size.y, HouseSmokeConfig.size.x);
 
-        const smokeMaterial = new THREE.MeshBasicMaterial({
-            color: 0xff0000,
-            side: THREE.DoubleSide,
-        });
+        this.shaderMaterial = Materials.getInstance().materials[MaterialType.Smoke] as THREE.ShaderMaterial;
 
         const hideScale = 0.001;
 
-        const view = this.view = new THREE.InstancedMesh(smokeGeometry, smokeMaterial, SmokeConfig.count);
+        const view = this.view = new THREE.InstancedMesh(smokeGeometry, this.shaderMaterial, HouseSmokeConfig.count);
         this.add(view);
 
         view.frustumCulled = false;
 
         const matrix = new THREE.Matrix4();
 
-        for (let i = 0; i < SmokeConfig.count; i++) {
+        for (let i = 0; i < HouseSmokeConfig.count; i++) {
             const position: THREE.Vector3 = new THREE.Vector3();
             const rotationQuaternion = new THREE.Quaternion();
             const scale = new THREE.Vector3(hideScale, hideScale, hideScale);

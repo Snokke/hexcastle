@@ -33,7 +33,7 @@ import { NatureGenerator } from './Nature/NatureGenerator';
 import { ButtonType } from '../../../Data/Enums/ButtonType';
 import { CloudsConfig } from '../../../Data/Configs/CloudsConfig';
 import HouseSmoke from './HouseSmoke/HouseSmoke';
-import { SmokeConfig } from '../../../Data/Configs/SmokeConfig';
+import { HouseSmokeConfig } from '../../../Data/Configs/HouseSmokeConfig';
 
 export default class CastleScene extends THREE.Group {
 
@@ -101,7 +101,7 @@ export default class CastleScene extends THREE.Group {
 
         this.hexTileParts.update(dt);
         this.clouds.update(dt);
-        this.houseSmoke.update();
+        this.houseSmoke.update(dt);
     }
 
     public start(): void {
@@ -467,7 +467,7 @@ export default class CastleScene extends THREE.Group {
                         this.hexTileParts.showPart(step.tile.type, step.tile.rotation, step.tile.position);
                     }
 
-                    if (SmokeConfig.tiles.includes(step.tile.type)) {
+                    if (HouseSmokeConfig.tiles.includes(step.tile.type)) {
                         this.houseSmoke.show(step.tile.position, step.tile.rotation, step.tile.type);
                     }
                 }
