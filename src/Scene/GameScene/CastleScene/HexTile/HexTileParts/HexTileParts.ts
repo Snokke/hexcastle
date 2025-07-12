@@ -44,6 +44,26 @@ export default class HexTileParts extends THREE.Group {
         }
     }
 
+    public showPartInstantly(hexTileType: HexTileType, rotation: HexRotation, position: IHexCoord): void {
+        const partConfig = HexTilePartsConfig[hexTileType];
+        if (partConfig) {
+            const className = partConfig.className;
+            const partInstance = new className(partConfig.type);
+            this.parts.push(partInstance);
+            this.add(partInstance);
+
+            const partPosition: THREE.Vector3 = HexGridHelper.axialToWorld(position, GameConfig.gameField.hexSize, GameConfig.gameField.GridOrientation);
+            partInstance.position.set(partPosition.x, 0, partPosition.z);
+
+            const defaultRotation: number = GameConfig.gameField.GridOrientation === GridOrientation.PointyTop ? Math.PI : Math.PI / 2 + Math.PI / 3;
+            HexGridHelper.setRotation(partInstance, rotation);
+            partInstance.rotation.y += defaultRotation;
+
+            partInstance.show();
+            partInstance.scale.set(1, 1, 1);
+        }
+    }
+
     private startShowAnimation(part: HexTilePartAbstract, type: HexTileType): void {
         const config: ITileShowAnimationConfig = TilesShowAnimationConfig[type];
         const scale = { value: 0.001 };

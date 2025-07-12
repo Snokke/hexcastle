@@ -10,6 +10,7 @@ import { IHexCoord, IHexTileInstanceData } from '../../../Data/Interfaces/IHexTi
 import { GridOrientation } from '../../../Data/Enums/GridOrientation';
 import HexTileInstance from './HexTile/HexTileInstance';
 import { HexRotation } from '../../../Data/Enums/HexRotation';
+import { ITransform } from '../../../Data/Interfaces/IThreeJS';
 
 export default class Intro extends THREE.Group {
     private tilesInstanceMesh: THREE.InstancedMesh;
@@ -45,7 +46,10 @@ export default class Intro extends THREE.Group {
             const r2 = Math.min(radius, -q + radius);
             for (let r = r1; r <= r2; r++) {
                 const index: number = this.hexCoordsById.findIndex(coord => coord.q === q && coord.r === r);
-                ThreeJSHelper.updateInstanceTransform(this.tilesInstanceMesh, index, undefined, undefined, new THREE.Vector3(1, 1, 1));
+                const transform: ITransform = {
+                    scale: new THREE.Vector3(1, 1, 1)
+                }
+                ThreeJSHelper.updateInstanceTransform(this.tilesInstanceMesh, index, transform);
             }
         }
 
@@ -58,7 +62,10 @@ export default class Intro extends THREE.Group {
 
     private hideAllTiles(): void {
         for (let i = 0; i < this.hexCoordsById.length; i++) {
-            ThreeJSHelper.updateInstanceTransform(this.tilesInstanceMesh, i, undefined, undefined, new THREE.Vector3(0.001, 0.001, 0.001));
+            const transform: ITransform = {
+                scale: new THREE.Vector3(0.001, 0.001, 0.001)
+            }
+            ThreeJSHelper.updateInstanceTransform(this.tilesInstanceMesh, i, transform);
         }
 
         this.wallRadiusOne.visible = false;

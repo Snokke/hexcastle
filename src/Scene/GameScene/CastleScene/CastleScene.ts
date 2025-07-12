@@ -32,6 +32,8 @@ import Clouds from './Clouds';
 import { NatureGenerator } from './Nature/NatureGenerator';
 import { ButtonType } from '../../../Data/Enums/ButtonType';
 import { CloudsConfig } from '../../../Data/Configs/CloudsConfig';
+import HouseSmoke from './HouseSmoke/HouseSmoke';
+import { HouseSmokeConfig } from '../../../Data/Configs/HouseSmokeConfig';
 
 export default class CastleScene extends THREE.Group {
 
@@ -67,6 +69,7 @@ export default class CastleScene extends THREE.Group {
     private clouds: Clouds;
     private natureGenerator: NatureGenerator;
     private stopButtonActive: boolean = false;
+    private houseSmoke: HouseSmoke;
 
     private isIntroActive: boolean = true;
 
@@ -98,6 +101,7 @@ export default class CastleScene extends THREE.Group {
 
         this.hexTileParts.update(dt);
         this.clouds.update(dt);
+        this.houseSmoke.update(dt);
     }
 
     public start(): void {
@@ -120,6 +124,7 @@ export default class CastleScene extends THREE.Group {
         this.initHexTileParts();
         this.initClouds();
         this.initNatureGenerator();
+        this.initSmoke();
 
         this.initGlobalListeners();
     }
@@ -425,6 +430,11 @@ export default class CastleScene extends THREE.Group {
         this.natureGenerator = new NatureGenerator();
     }
 
+    private initSmoke(): void {
+        const houseSmoke = this.houseSmoke = new HouseSmoke();
+        this.add(houseSmoke);
+    }
+
     private showPredefinedLandscapeTiles(): void {
         if (DebugGameConfig.generateType[this.showingEntityType].show === false) {
             return;
@@ -455,6 +465,13 @@ export default class CastleScene extends THREE.Group {
 
                     if (HexTilePartsConfig[step.tile.type]) {
                         this.hexTileParts.showPart(step.tile.type, step.tile.rotation, step.tile.position);
+                    }
+
+                    if (HouseSmokeConfig.tiles.includes(step.tile.type)) {
+                        const showSmoke = Math.random() < HouseSmokeConfig.chance;
+                        if (showSmoke) {
+                            this.houseSmoke.show(step.tile.position, step.tile.rotation, step.tile.type);
+                        }
                     }
                 }
             }
@@ -574,6 +591,7 @@ export default class CastleScene extends THREE.Group {
         this.islandsDebug?.reset();
 
         this.clouds.hide();
+        this.houseSmoke.hideAll();
     }
 
     private initGlobalListeners(): void {
@@ -630,6 +648,15 @@ export default class CastleScene extends THREE.Group {
 
             this.tilesShowState = TilesShowState.Completed;
             this.clouds.showInstantly();
+
+            for (const entityType in this.steps) {
+                for (let i = 0; i < this.steps[entityType].length; i++) {
+                    const step: INewTileStep = this.steps[entityType][i];
+                    if (step?.tile?.type && HexTilePartsConfig[step.tile.type]) {
+                        this.hexTileParts.showPartInstantly(step.tile.type, step.tile.rotation, step.tile.position);
+                    }
+                }
+            }
         }
     }
 

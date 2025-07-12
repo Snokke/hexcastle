@@ -2,7 +2,7 @@
   "name": "hexcastle",
   "version": "0.1.0",
   "description": "HexCastle game",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",

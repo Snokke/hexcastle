@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { MaterialType } from '../../Data/Enums/MaterialType';
 import Loader from '../Loader/AssetsLoader';
 import { FlagVertexShader, FlagFragmentShader } from './Shaders/FlagShader';
+import { SmokeFragmentShader, SmokeVertexShader } from './Shaders/SmokeShader';
 
 export default class Materials {
     static instance: Materials;
@@ -25,6 +26,7 @@ export default class Materials {
         this.initTransparentMaterial();
         this.initTileDebugMaterials();
         this.initFlagMaterial();
+        this.initSmokeMaterial();
     }
 
     private initMainMaterial(): void {
@@ -94,6 +96,25 @@ export default class Materials {
                 time: { value: 0.0 },
             },
         });
+    }
+
+    private initSmokeMaterial(): void {
+        const perlinTexture: THREE.Texture = Loader.assets['noiseTexture'] as THREE.Texture;
+        perlinTexture.wrapS = THREE.RepeatWrapping;
+        perlinTexture.wrapT = THREE.RepeatWrapping;
+
+        this.materials[MaterialType.Smoke] = new THREE.ShaderMaterial({
+            vertexShader: SmokeVertexShader,
+            fragmentShader: SmokeFragmentShader,
+            side: THREE.DoubleSide,
+            transparent: true,
+            depthWrite: false,
+            uniforms:
+            {
+                uTime: new THREE.Uniform(0),
+                uPerlinTexture: { value: perlinTexture }
+            },
+        })
     }
 }
 
