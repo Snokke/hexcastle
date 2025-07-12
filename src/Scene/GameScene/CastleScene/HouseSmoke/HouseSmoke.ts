@@ -34,7 +34,7 @@ export default class HouseSmoke extends THREE.Group {
         }
     }
 
-    public show(hexPosition: IHexCoord, rotation: HexRotation, parentHexType: HexTileType): void {
+    public show(hexPosition: IHexCoord, rotation: HexRotation, parentHexType: HexTileType, instant: boolean = false): void {
         if (this.currentIndex >= HouseSmokeConfig.maxCount) {
             return;
         }
@@ -56,7 +56,13 @@ export default class HouseSmoke extends THREE.Group {
             rotation: rotationQuaternion,
         });
 
-        this.startShowAnimation(this.currentIndex, parentHexType);
+        if (instant) {
+            ThreeJSHelper.updateInstanceTransform(this.view, this.currentIndex, {
+                scale: new THREE.Vector3(1, 1, 1)
+            });
+        } else {
+            this.startShowAnimation(this.currentIndex, parentHexType);
+        }
 
         this.currentIndex++;
     }
