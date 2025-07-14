@@ -6,7 +6,7 @@ const DebugConfig = {
     orbitControls: true,
     showAxisHelper: false,
     gui: {
-        desktop: true,
+        desktop: false,
         mobile: false,
     }
 };

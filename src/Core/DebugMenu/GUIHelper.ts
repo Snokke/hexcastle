@@ -1,6 +1,7 @@
 import { Pane } from 'tweakpane';
 import { DebugConfig } from '../../Data/Configs/Debug/DebugConfig';
 import isMobile from 'ismobilejs';
+import queryString from 'query-string';
 
 export default class GUIHelper {
     static instance: GUIHelper;
@@ -60,11 +61,18 @@ export default class GUIHelper {
 
     public showAfterAssetsLoad(): void {
         const isMobileDevice = isMobile(window.navigator).any;
+        let debugEnableGUI = false;
 
         if (isMobileDevice) {
-            this.gui.hidden = !DebugConfig.gui.mobile;
+            debugEnableGUI = DebugConfig.gui.mobile;
         } else {
-            this.gui.hidden = !DebugConfig.gui.desktop;
+            debugEnableGUI = DebugConfig.gui.desktop;
+        }
+
+        const parsed = queryString.parse(location.search);
+
+        if ('debug' in parsed || debugEnableGUI) {
+            this.gui.hidden = false;
         }
     }
 

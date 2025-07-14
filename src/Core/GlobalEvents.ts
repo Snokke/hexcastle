@@ -22,7 +22,7 @@ export type GlobalEvents = {
     'debug:rendererStatsChanged': void;
     'debug:gridChanged': void;
     'debug:landscapeShow': void;
-    'debug:fieldRadiusChanged': void;
+    'debug:maxFieldRadiusChanged': void;
     'debug:entropyChanged': void;
     'debug:landscapeRotationChanged': void;
     'debug:wallsShow': void;

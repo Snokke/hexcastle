@@ -113,7 +113,7 @@ export default class FieldRadius extends PIXI.Container {
             GlobalEventBus.emit('ui:sliderPointerUp');
         });
 
-        GlobalEventBus.on('debug:fieldRadiusChanged', () => {
+        GlobalEventBus.on('debug:maxFieldRadiusChanged', () => {
             const sliderOptions: SliderOptions = {
                 min: GameConfig.gameField.radius.min,
                 max: GameConfig.gameField.radius.max,

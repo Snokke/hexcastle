@@ -60,7 +60,7 @@ export default class GameDebugMenu {
         //     max: 50,
         //     step: 1,
         // }).on('change', () => {
-        //     GlobalEventBus.emit('debug:fieldRadiusChanged');
+        //     GlobalEventBus.emit('debug:maxFieldRadiusChanged');
         // });
 
         sceneFolder.addSeparator();
